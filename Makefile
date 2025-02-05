@@ -2,12 +2,12 @@
 ECR_REGISTRY = public.ecr.aws/p8v2r4g3
 IMAGE_NAME = whisperx-on-aws-lambda
 REGION = us-east-1
-AWS_PROFILE = nonprod
+AWS_PROFILE = default
 
 .PHONY: login build tag push deploy 
 
 login:
-	aws ecr-public get-login-password --region $(REGION) --profile $(AWS_PROFILE) | docker login --username AWS --password-stdin $(ECR_REGISTRY)
+	aws ecr get-login-password --region $(REGION) --profile $(AWS_PROFILE) | docker login --username AWS --password-stdin $(ECR_REGISTRY)
 
 build:
 	docker build --platform=linux/amd64 -t $(IMAGE_NAME) .
