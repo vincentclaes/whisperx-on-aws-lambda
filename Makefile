@@ -1,8 +1,8 @@
 # Variables
 ECR_REGISTRY = public.ecr.aws/p8v2r4g3
 IMAGE_NAME = whisperx-on-aws-lambda
-REGION = us-east-1
-AWS_PROFILE ?= $(or $(AWS_PROFILE),default)
+REGION = eu-west-1
+AWS_PROFILE = default
 ACCOUNT_ID := $(shell aws sts get-caller-identity --query Account --output text)
 PRIVATE_ECR = $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com
 PRIVATE_REPO = whisperx-on-lambda
