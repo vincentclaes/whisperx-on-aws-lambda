@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation template for WhisperX Lambda function'
+
+Resources:
+  WhisperXLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: whisperx-transcription
+      PackageType: Image
+      Code:
+        ImageUri: public.ecr.aws/p8v2r4g3/whisperx-on-aws-lambda
+      Role: !GetAtt LambdaExecutionRole.Arn
+      MemorySize: 10000
+      Timeout: 900
+      EphemeralStorage:
+        Size: 10240
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
