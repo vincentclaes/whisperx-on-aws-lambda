@@ -8,9 +8,9 @@ Resources:
       FunctionName: whisperx-transcription
       PackageType: Image
       Code:
-        ImageUri: 077590795309.dkr.ecr.eu-west-1.amazonaws.com/whisperx-on-lambda:latest
+        ImageUri: public.ecr.aws/p8v2r4g3/whisperx-on-aws-lambda
       Role: !GetAtt LambdaExecutionRole.Arn
-      MemorySize: 10000
+      MemorySize: 10240
       Timeout: 900
       EphemeralStorage:
         Size: 10240
@@ -27,25 +27,5 @@ Resources:
                 - lambda.amazonaws.com
             Action:
               - sts:AssumeRole
-      Policies:
-        - PolicyName: CloudWatchLogsPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: '*'
-        - PolicyName: ECRPullPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - ecr:GetDownloadUrlForLayer
-                  - ecr:BatchGetImage
-                  - ecr:BatchCheckLayerAvailability
-                Resource: 
-                  - arn:aws:ecr:eu-west-1:077590795309:repository/whisperx-on-lambda
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole

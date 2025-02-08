@@ -45,3 +45,5 @@ push-private:
 	docker push $(PRIVATE_ECR)/$(PRIVATE_REPO):latest
 
 setup-private: create-private-repo private-ecr-login pull-public tag-private push-private
+
+deploy-private: build tag tag-private push-private

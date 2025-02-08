@@ -2,6 +2,13 @@ import whisperx
 import tempfile
 import base64
 
+import os
+
+os.environ["TRANSFORMERS_CACHE"] = "/tmp"
+os.environ["XDG_CACHE_HOME"] = "/tmp/.cache"
+os.environ["HF_HOME"] = "/tmp/.cache/huggingface"
+os.environ["TORCH_HOME"] = "/tmp/.cache/torch"
+os.environ["MPLCONFIGDIR"] = "/tmp/.cache/matplotlib"
 
 model = whisperx.load_model("small", device="cpu", compute_type="int8", download_root="/tmp")
 
