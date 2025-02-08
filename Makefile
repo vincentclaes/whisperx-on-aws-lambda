@@ -13,7 +13,7 @@ login:
 	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/p8v2r4g3
 
 build:
-	docker build --platform=linux/amd64 --progress=plain -t $(IMAGE_NAME) .
+	docker build --no-cache --platform=linux/amd64 --progress=plain -t $(IMAGE_NAME) .
 
 tag:
 	docker tag $(IMAGE_NAME):latest $(ECR_REGISTRY)/$(IMAGE_NAME):latest

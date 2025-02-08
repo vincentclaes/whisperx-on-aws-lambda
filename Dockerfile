@@ -1,23 +1,13 @@
-ARG FUNCTION_DIR="/function"
+FROM public.ecr.aws/lambda/python:3.12
 
-FROM python:3.12
-
-ARG FUNCTION_DIR
-WORKDIR ${FUNCTION_DIR}
-
-RUN pip install \
-    --target ${FUNCTION_DIR} \
-        awslambdaric
-
-RUN apt-get update && \
-    apt-get install -y build-essential ffmpeg && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN dnf -y install git wget tar xz
+# Static Build of ffmpeg (open source - go through it if concerned!)
+RUN wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && tar xvf ffmpeg-release-amd64-static.tar.xz && mv ffmpeg-*-amd64-static/ffmpeg /usr/bin/ffmpeg && rm -Rf ffmpeg*
+RUN pip install --no-cache-dir setuptools-rust uv
 
 COPY requirements.txt ${LAMBDA_TASK_ROOT}
 COPY lambda_function.py ${LAMBDA_TASK_ROOT}
 
-RUN pip install -r requirements.txt
+RUN uv pip install --system -r requirements.txt --verbose
 
-ENTRYPOINT [ "/usr/local/bin/python", "-m", "awslambdaric" ]
 CMD [ "lambda_function.lambda_handler" ]
