@@ -1,17 +1,37 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'CloudFormation template for WhisperX Lambda function'
 
+Parameters:
+  WhisperXModelSize:
+    Type: String
+    Default: small
+    AllowedValues:
+      - tiny
+      - tiny.en
+      - base
+      - base.en
+      - small
+      - small.en
+      - medium
+      - medium.en
+      - large
+      - large-v2
+    Description: The size of the WhisperX model to use for transcription (tiny=1GB, base=1.5GB, small=2.5GB, medium=5GB, large/large-v2=10GB)
+
 Resources:
   WhisperXLambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: whisperx-transcription
+      FunctionName: whisperx-on-lambda
       PackageType: Image
       Code:
         ImageUri: public.ecr.aws/p8v2r4g3/whisperx-on-aws-lambda
       Role: !GetAtt LambdaExecutionRole.Arn
       MemorySize: 10240
       Timeout: 900
+      Environment:
+        Variables:
+          WHISPERX_MODEL_SIZE: !Ref WhisperXModelSize
       EphemeralStorage:
         Size: 10240
 

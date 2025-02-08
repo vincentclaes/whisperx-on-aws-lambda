@@ -9,41 +9,18 @@ PRIVATE_REPO = whisperx-on-lambda
 
 .PHONY: login build tag push deploy create-private-repo private-ecr-login pull-public tag-private push-private setup-private
 
-login:
-	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/p8v2r4g3
-
-build:
+image:
 	docker build --no-cache --platform=linux/amd64 --progress=plain -t $(IMAGE_NAME) .
 
-tag:
-	docker tag $(IMAGE_NAME):latest $(ECR_REGISTRY)/$(IMAGE_NAME):latest
-
-push:
-	docker push $(ECR_REGISTRY)/$(IMAGE_NAME):latest
-
-deploy: build tag push
-
-# Private ECR operations
-create-private-repo:
-	aws ecr create-repository \
-		--repository-name $(PRIVATE_REPO) \
-		--region $(REGION) \
-		--profile $(AWS_PROFILE) || true
-
-private-ecr-login:
+login:
 	aws ecr get-login-password \
 		--region $(REGION) \
 		--profile $(AWS_PROFILE) | docker login --username AWS --password-stdin $(PRIVATE_ECR)
 
-pull-public:
-	docker pull $(ECR_REGISTRY)/$(IMAGE_NAME):latest
-
-tag-private:
+tag:
 	docker tag $(ECR_REGISTRY)/$(IMAGE_NAME):latest $(PRIVATE_ECR)/$(PRIVATE_REPO):latest
 
-push-private:
+push:
 	docker push $(PRIVATE_ECR)/$(PRIVATE_REPO):latest
 
-setup-private: create-private-repo private-ecr-login pull-public tag-private push-private
-
-deploy-private: build tag tag-private push-private
+build: image tag login push

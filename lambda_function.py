@@ -10,7 +10,8 @@ os.environ["HF_HOME"] = "/tmp/.cache/huggingface"
 os.environ["TORCH_HOME"] = "/tmp/.cache/torch"
 os.environ["MPLCONFIGDIR"] = "/tmp/.cache/matplotlib"
 
-model = whisperx.load_model("small", device="cpu", compute_type="int8", download_root="/tmp")
+model_size = os.environ.get("WHISPERX_MODEL_SIZE", "small")
+model = whisperx.load_model(model_size, device="cpu", compute_type="int8", download_root="/tmp")
 
 def lambda_handler(event: object, context: object):
     try:
